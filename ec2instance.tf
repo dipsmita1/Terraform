@@ -11,7 +11,6 @@ resource "aws_security_group_rule" "ssh_ingress_access" {
 }
   security_group_id = "sg-0b4cfc69904eee69c"
   cidr_blocks = [ "0.0.0.0/0" ]
-}
 resource "aws_instance" "instance" {
   subnet_id = "subnet-0e4bfb42"
   instance_type = "t2.micro"
