@@ -17,7 +17,7 @@ resource "aws_subnet" "public_subnet" {
 }
 
 resource "aws_network_interface" "foo" {
-  subnet_id   = "${aws_subnet.my_subnet.id}"
+  subnet_id   = "${aws_subnet.public_subnet.id}"
   private_ips = ["192.168.10.100"]
 
   tags = {
