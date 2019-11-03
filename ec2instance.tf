@@ -1,26 +1,40 @@
-resource "aws_security_group" "SG" {
-  name = "Public_SG"
+resource "aws_vpc" "my_vpc" {
+  cidr_block = "192.168.0.0/24"
 
-  description = "Public security group."
-  vpc_id = "vpc-8da943e6"
-}
-
-resource "aws_security_group_rule" "ssh_ingress_access" {
-  security_group_id = "sg-0b4cfc69904eee69c"
-  cidr_blocks = [ "0.0.0.0/0" ] 
-}
-  security_group_id = "sg-0b4cfc69904eee69c"
-  cidr_blocks = [ "0.0.0.0/0" ]
-resource "aws_instance" "instance" {
-  subnet_id = "subnet-0e4bfb42"
-  instance_type = "t2.micro"
-  vpc_security_group_ids = [ ]
-  associate_public_ip_address = false
-  tags {
-    Name = "instance_public"
+  tags = {
+    Name = "Terraform"
   }
-  
-  # Keep these arguments as is:
-  ami = "ami-0c12622297a5aa4e6"
-  availability_zone = "us-east-1c"
+}
+
+resource "aws_subnet" "public_subnet" {
+  vpc_id            = "${aws_vpc.my_vpc.id}"
+  cidr_block        = "192.168.10.0/24"
+  availability_zone = "us-west-2a"
+
+  tags = {
+    Name = "Terraform"
+  }
+}
+
+resource "aws_network_interface" "foo" {
+  subnet_id   = "${aws_subnet.my_subnet.id}"
+  private_ips = ["192.168.10.100"]
+
+  tags = {
+    Name = "primary_network_interface"
+  }
+}
+
+resource "aws_instance" "foo" {
+  ami           = "ami-0c12622297a5aa4e6" # us-west-2
+  instance_type = "t2.micro"
+
+  network_interface {
+    network_interface_id = "${aws_network_interface.foo.id}"
+    device_index         = 0
+  }
+
+  credit_specification {
+    cpu_credits = "unlimited"
+  }
 }
