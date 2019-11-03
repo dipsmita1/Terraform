@@ -1,5 +1,5 @@
 resource "aws_vpc" "my_vpc" {
-  cidr_block = "192.168.0.0/24"
+  cidr_block = "192.168.0.0/16"
 
   tags = {
     Name = "Terraform"
@@ -9,7 +9,7 @@ resource "aws_vpc" "my_vpc" {
 resource "aws_subnet" "public_subnet" {
   vpc_id            = "${aws_vpc.my_vpc.id}"
   cidr_block        = "192.168.10.0/24"
-  availability_zone = "us-west-2a"
+  availability_zone = "us-east-2c"
 
   tags = {
     Name = "Terraform"
